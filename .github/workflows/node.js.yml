@@ -1,31 +1,36 @@
-# This workflow will do a clean installation of node dependencies, cache/restore them, build the source code and run tests across different versions of node
-# For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-nodejs
-
-name: Node.js CI
+name: Node.js CI with PM2
 
 on:
   push:
     branches: [ "main" ]
+
 jobs:
   build:
-
     runs-on: self-hosted
 
     strategy:
       matrix:
         node-version: [18.x]
-        # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
 
     steps:
-    - uses: actions/checkout@v4
-    - name: Use Node.js ${{ matrix.node-version }}
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Setup Node.js ${{ matrix.node-version }}
       uses: actions/setup-node@v3
       with:
         node-version: ${{ matrix.node-version }}
         cache: 'npm'
-    - run: npm ci
+
+    - name: Install dependencies
+      run: npm ci
+
+    - name: Install PM2
+      run: npm install pm2 -g
+
     - name: Start or Restart PM2 Application
       run: |
+        pm2 list  # Hiển thị danh sách các ứng dụng hiện đang được quản lý bởi PM2 (để kiểm tra/debug)
         if pm2 describe test > /dev/null; then
           pm2 restart test
         else
