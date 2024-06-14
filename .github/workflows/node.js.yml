@@ -24,3 +24,10 @@ jobs:
         node-version: ${{ matrix.node-version }}
         cache: 'npm'
     - run: npm ci
+    - name: Start or Restart PM2 Application
+      run: |
+        if pm2 describe test > /dev/null; then
+          pm2 restart test
+        else
+          pm2 start npm --name "test" -- start
+        fi
