@@ -25,8 +25,15 @@ jobs:
     - name: Install dependencies
       run: npm ci
 
-    - name: Install PM2
-      run: npm install pm2 -g
+    - name: Check if PM2 is installed
+      run: |
+        if ! command -v pm2 &> /dev/null
+        then
+            echo "PM2 could not be found, installing..."
+            npm install pm2 -g
+        else
+            echo "PM2 is already installed"
+        fi
 
     - name: Start or Restart PM2 Application
       run: |
