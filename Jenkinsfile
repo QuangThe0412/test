@@ -15,7 +15,11 @@ pipeline {
                     if (portInUse) {
                         echo 'Port 8089 is already in use. Stopping the existing service.'
                         def pid = sh(script: 'netstat -anp | grep ":8089" | awk \'{print $7}\' | cut -d"/" -f1', returnStdout: true).trim()
-                        sh "kill -9 ${pid}"
+                        if (pid) {
+                            sh "kill -9 ${pid}"
+                        } else {
+                            echo 'No PID found for port 8089.'
+                        }
                     }
                     sh 'echo "Starting new Cloudflare tunnel..."'
                     sh 'cloudflared access ssh --hostname ssh-boi.nhungchangtrainhaycam.site --url 127.0.0.1:8089'
