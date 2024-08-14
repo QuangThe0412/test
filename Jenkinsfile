@@ -19,7 +19,7 @@ pipeline {
             steps {
                 sshagent(['boi-win-server-2019']) {
                     sh 'echo "ssh to server..."'
-                    sh 'ssh -o StrictHostKeyChecking=no -l administrator 127.0.0.1:8089 touch test.txt'
+                    sh 'ssh -o "StrictHostKeyChecking=no" -p 8089 administrator@127.0.0.1 touch test.txt'
                 }
             }
         }
