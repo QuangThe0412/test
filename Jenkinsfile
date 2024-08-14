@@ -19,8 +19,9 @@ pipeline {
             steps {
                 sshagent(['boi-win-server-2019']) {
                     sh 'echo "ssh to server..."'
-                    sh 'ssh -o "StrictHostKeyChecking=no" -p 8089 administrator@127.0.0.1 touch test.txt'
-                }
+                    /* groovylint-disable-next-line LineLength */
+                    /* groovylint-disable-next-line LineLength */
+                    sh 'ssh -o "StrictHostKeyChecking=no" -p 8089 administrator@127.0.0.1 powershell.exe New-Item -Path C:\\Users\\Administrator\\test.txt -ItemType File'                }
             }
         }
 
