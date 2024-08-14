@@ -11,11 +11,11 @@ pipeline {
         stage('Run cloudflare tunnel') {
             steps {
                 script {
-                    def portInUse = sh(script: 'netstat -an | findstr ":8089"', returnStatus: true) == 0
+                    def portInUse = sh(script: 'netstat -an | grep ":8089"', returnStatus: true) == 0
                     if (portInUse) {
                         echo 'Port 8089 is already in use. Stopping the existing service.'
-                        def pid = sh(script: 'for /f "tokens=5" %a in (\'netstat -aon ^| findstr ":8089"\') do @echo %a', returnStdout: true).trim()
-                        sh "taskkill /F /PID ${pid}"
+                        def pid = sh(script: 'netstat -anp | grep ":8089" | awk \'{print $7}\' | cut -d"/" -f1', returnStdout: true).trim()
+                        sh "kill -9 ${pid}"
                     }
                     sh 'echo "Starting new Cloudflare tunnel..."'
                     sh 'cloudflared access ssh --hostname ssh-boi.nhungchangtrainhaycam.site --url 127.0.0.1:8089'
